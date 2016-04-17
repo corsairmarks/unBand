@@ -38,16 +38,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Band.Admin.Desktop.unband">
-      <HintPath>..\Microsoft.Band.Admin.Desktop.unband.dll</HintPath>
+      <HintPath>..\Microsoft.Band.Admin.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Band.Admin.unband">
-      <HintPath>..\Microsoft.Band.Admin.unband.dll</HintPath>
+      <HintPath>..\Microsoft.Band.Admin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Band.Desktop.unband">
-      <HintPath>..\Microsoft.Band.Desktop.unband.dll</HintPath>
+      <HintPath>..\Microsoft.Band.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Band.unband">
-      <HintPath>..\Microsoft.Band.unband.dll</HintPath>
+      <HintPath>..\Microsoft.Band.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
