@@ -8,17 +8,18 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Band.Sensors;
 
-namespace unBand.BandHelpers.Sensors 
+namespace unBand.BandHelpers.Sensors
 {
-    public class BandPedometer: INotifyPropertyChanged
+    public class BandPedometer : INotifyPropertyChanged
     {
 
         private CargoClient _client;
-        private uint _totalSteps;
-        private uint _totalMovements;
+        private long _totalSteps;
+        private long _totalMovements;
 
-        public uint TotalSteps
+        public long TotalSteps
         {
             get { return _totalSteps; }
             set
@@ -31,7 +32,7 @@ namespace unBand.BandHelpers.Sensors
             }
         }
 
-        public uint TotalMovements
+        public long TotalMovements
         {
             get { return _totalMovements; }
             set
@@ -60,18 +61,22 @@ namespace unBand.BandHelpers.Sensors
         /// </summary>
         private async Task OneTimePedometerReading()
         {
-            _client.PedometerUpdated += _client_OneTimePedometerUpdated;
-            await _client.SensorSubscribeAsync(SensorType.Pedometer);
+            _client.Pedometer.ReadingChanged += _client_OneTimePedometerUpdated;
+            await _client.Pedometer.StopReadingsAsync();
         }
 
-        void _client_OneTimePedometerUpdated(object sender, PedometerUpdatedEventArgs e)
+        void _client_OneTimePedometerUpdated<T>(object sender, BandSensorReadingEventArgs<T> e) where T : IBandSensorReading
         {
-            _client.SensorUnsubscribe(SensorType.Pedometer);
-            
-            TotalSteps = e.TotalSteps;
-            TotalMovements = e.TotalMovements;
+            var asPedo = e.SensorReading as BandPedometerReading;
+            if (asPedo != null)
+            {
+                _client.Pedometer.StopReadingsAsync();
 
-            _client.PedometerUpdated -= _client_OneTimePedometerUpdated;
+                TotalSteps = asPedo.StepsToday;
+                TotalMovements = asPedo.TotalSteps;
+
+                _client.Pedometer.ReadingChanged -= _client_OneTimePedometerUpdated;
+            }
         }
 
         #region INotifyPropertyChanged

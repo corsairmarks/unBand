@@ -87,14 +87,13 @@ namespace unBand.BandHelpers
 
         public async Task InitAsync()
         {
-            PermanentSerialNumber = await _client.GetPermanentSerialNumberAsync();
             ProductSerialNumber   = await _client.GetProductSerialNumberAsync();
 
             IsValidFirmware  = await _client.GetFirmwareBinariesValidationStatusAsync();
-            FirmwareVersions = await _client.GetFirmwareVersionsAsync();
+            FirmwareVersions = _client.FirmwareVersions;
             EphemerisCoverageDates = await _client.GetGpsEphemerisCoverageDatesFromDeviceAsync();
             LogVersion = await _client.GetLogVersionAsync();
-            MaxStrappCount = await _client.GetMaxStrappCountAsync();
+            MaxStrappCount = await _client.GetMaxTileCountAsync();
             
             PendingDeviceDataBytes = await _client.GetPendingDeviceDataBytesAsync();
             // var j = await _client.GetPendingLocalDataBytesAsync(); NullException
@@ -104,7 +103,7 @@ namespace unBand.BandHelpers
             await _client.SensorSubscribeAsync(SensorType.BatteryGauge); 
             _client.BatteryGaugeUpdated += _client_BatteryGaugeUpdated;
 
-            _client.BatteryUpdated += _client_BatteryUpdated;
+            //_client.BatteryUpdated += _client_BatteryUpdated;
 
             var userProfile = await _client.GetUserProfileFromDeviceAsync();
             
@@ -159,10 +158,10 @@ namespace unBand.BandHelpers
             catch { } // this will throw if the user disconnected their band from the machine before exiting
         }
 
-        void _client_BatteryUpdated(object sender, BatteryUpdatedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        //void _client_BatteryUpdated(object sender, BatteryUpdatedEventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         void _client_BatteryGaugeUpdated(object sender, BatteryGaugeUpdatedEventArgs e)
         {

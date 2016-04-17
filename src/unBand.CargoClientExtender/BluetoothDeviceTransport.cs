@@ -16,12 +16,12 @@ namespace unBand.CargoClientExtender
 {
     public class BluetoothDeviceTransport : IDeviceTransport, IDisposable
     {
-        public event EventHandler Disconnected;
+        public event EventHandler<TransportDisconnectedEventArgs> Disconnected;
 
         private bool _disposed;
-        
+
         public CargoStreamReader CargoReader { get; private set; }
-        public Stream CargoStream { get; private set; }
+        public ICargoStream CargoStream { get; private set; }
         public CargoStreamWriter CargoWriter { get; private set; }
         public bool IsConnected { get; private set; }
         public int MaxDataPayloadSize { get; private set; }
@@ -48,7 +48,7 @@ namespace unBand.CargoClientExtender
 
             if (deviceService == null)
             {
-                throw new Exception("Failed to create RfcommDeviceService with id: " + _deviceInfo.Id.ToString());
+                throw new Exception("Failed to create RfcommDeviceService with id: " + _deviceInfo.Device.Id);
             }
 
             var streamSocket = new StreamSocket();
@@ -60,14 +60,20 @@ namespace unBand.CargoClientExtender
             // we could have used streamSocket.Input/OutputStream.AsStreamForRead/Write but they don't support timeouts
             // and it turns out those are super important if you don't want to lock up constantly on random calls (like
             // trying to get the background when there isn't one :( ).
-            
+
+            ILoggerProvider loggerProvider = new LoggerProviderStub();
             CargoReader = new CargoStreamReader(CargoStream, BufferServer.GetPoolInternal(8152));
-            CargoWriter = new CargoStreamWriter(CargoStream, BufferServer.GetPoolInternal(8152));
+            CargoWriter = new CargoStreamWriter(CargoStream, loggerProvider, BufferServer.GetPoolInternal(8152));
         }
 
         public void Disconnect()
         {
             throw new NotImplementedException();
+        }
+
+        public void WriteCommandPacket(ushort commandId, uint dataStageSize, byte[] argBuf, bool flush)
+        {
+
         }
 
         public void WriteCommandPacket(CargoCommand packetHeader, byte[] argBuf, bool flush)

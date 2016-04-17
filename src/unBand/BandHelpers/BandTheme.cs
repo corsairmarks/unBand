@@ -39,7 +39,7 @@ namespace unBand.BandHelpers
         private bool _inited;
 
         private WriteableBitmap _background;
-        private Microsoft.Band.Personalization.BandTheme _themeColor;
+        private Microsoft.Band.BandTheme _bandTheme;
 
         private SolidColorBrush _baseColor;
         private SolidColorBrush _highlightColor;
@@ -204,7 +204,7 @@ namespace unBand.BandHelpers
             if (meTileImage != null)
                 _background = meTileImage.ToWriteableBitmap();
 
-            _themeColor = await _client.PersonalizationManager.GetThemeAsync();
+            _bandTheme = await _client.PersonalizationManager.GetThemeAsync();
 
             SetColorProperties();
 
@@ -219,12 +219,12 @@ namespace unBand.BandHelpers
         /// </summary>
         private void SetColorProperties()
         {
-            BaseColor          = new SolidColorBrush(_themeColor.Base.ToColor());
-            HighlightColor     = new SolidColorBrush(_themeColor.Highlight.ToColor());
-            LowlightColor      = new SolidColorBrush(_themeColor.Lowlight.ToColor());
-            MutedColor         = new SolidColorBrush(_themeColor.Muted.ToColor());
-            SecondaryTextColor = new SolidColorBrush(_themeColor.SecondaryText.ToColor());
-            HighContrastColor  = new SolidColorBrush(_themeColor.HighContrast.ToColor());
+            BaseColor          = new SolidColorBrush(_bandTheme.Base.ToColor());
+            HighlightColor     = new SolidColorBrush(_bandTheme.Highlight.ToColor());
+            LowlightColor      = new SolidColorBrush(_bandTheme.Lowlight.ToColor());
+            MutedColor         = new SolidColorBrush(_bandTheme.Muted.ToColor());
+            SecondaryTextColor = new SolidColorBrush(_bandTheme.SecondaryText.ToColor());
+            HighContrastColor  = new SolidColorBrush(_bandTheme.HighContrast.ToColor());
         }
 
         /// Known Colors:
@@ -240,14 +240,14 @@ namespace unBand.BandHelpers
             if (!_inited) return;
 
             //TODO: all of these properties should be of type Color and the XAML should use a Converter
-            _themeColor.Base          = BaseColor.Color.ToBandColor();
-            _themeColor.Highlight     = HighlightColor.Color.ToBandColor();
-            _themeColor.Lowlight      = LowlightColor.Color.ToBandColor();
-            _themeColor.Muted         = MutedColor.Color.ToBandColor();
-            _themeColor.SecondaryText = SecondaryTextColor.Color.ToBandColor();
-            _themeColor.HighContrast  = HighContrastColor.Color.ToBandColor();
+            _bandTheme.Base          = BaseColor.Color.ToBandColor();
+            _bandTheme.Highlight     = HighlightColor.Color.ToBandColor();
+            _bandTheme.Lowlight      = LowlightColor.Color.ToBandColor();
+            _bandTheme.Muted         = MutedColor.Color.ToBandColor();
+            _bandTheme.SecondaryText = SecondaryTextColor.Color.ToBandColor();
+            _bandTheme.HighContrast  = HighContrastColor.Color.ToBandColor();
  
-            _client.SetDeviceThemeAsync(_themeColor);
+            _client.SetDeviceThemeAsync(_bandTheme);
         }
 
         public async Task ResetThemeAsync()
